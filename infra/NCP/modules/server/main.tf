@@ -23,6 +23,12 @@ resource "ncloud_login_key" "loginkey" {
   key_name = "${var.name}-loginkey-${var.env}"
 }
 
+resource "local_file" "private_key" {
+  filename        = "./${ncloud_login_key.loginkey.key_name}.pem"
+  content         = ncloud_login_key.loginkey.private_key
+  file_permission = "0400"
+}
+
 resource "ncloud_access_control_group" "acg" {
   name   = "${var.name}-acg-${var.env}"
   vpc_no = var.vpc_id
@@ -33,7 +39,7 @@ resource "ncloud_access_control_group_rule" "acg-rule" {
 
   inbound {
     protocol    = "TCP"
-    ip_block    = "0.0.0.0/0"
+    ip_block    = var.inbound_ip_block // "0.0.0.0/0"
     port_range  = var.port_range
     description = "accept ${var.port_range} port for ${var.name}"
   }
