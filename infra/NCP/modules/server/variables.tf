@@ -22,6 +22,10 @@ variable "subnet_id" {
   type = string
 }
 
+variable "inbound_ip_block" {
+  type = string
+}
+
 variable "port_range" {
   type = string
 }

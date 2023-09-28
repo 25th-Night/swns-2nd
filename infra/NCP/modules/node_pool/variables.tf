@@ -6,14 +6,18 @@ variable "ncp_secret_key" {
   type = string
 }
 
+variable "name" {
+  type = string
+}
+
 variable "env" {
   type = string
 }
 
-variable "subnet_netnum" {
+variable "cluster_uuid" {
   type = string
 }
 
-variable "subnet_type" {
+variable "ncloud_server_product_code" {
   type = string
 }

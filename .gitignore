@@ -309,3 +309,6 @@ terraform.rc
 
 # pub
 *.pub
+
+# ssh
+*.pem

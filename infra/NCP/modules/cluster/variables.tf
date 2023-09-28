@@ -18,10 +18,14 @@ variable "vpc_id" {
   type = string
 }
 
+variable "lb_subnet_id" {
+  type = string
+}
+
 variable "subnet_id" {
   type = string
 }
 
-variable "server_instance_no" {
+variable "k8s_version" {
   type = string
 }

@@ -1,6 +1,9 @@
 # 📢 소셜 네트워크 서비스 개발 프로젝트 2차
 
-> 참고 : <u>**[소셜 네트워크 서비스 개발 프로젝트 1차](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u> repository**
+### 🔔 참고 <br>
+> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u> repository** <br>
+> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 2차](https://github.com/likelion-backend-6th/TrackProject_2_ChoiSeonWoo)</u> repository** <br>
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → `k8s` 작업부터 이어서 진행하기 위해 `미러링` 를 통해 기존 작업 코드 및 커밋 내역을 복제후 진행하였음을 참고해주세요.
 
 <br>
 
@@ -497,6 +500,18 @@
 - [x]  좋아요 생성 코드 작성
 - [x]  코드 실행 및 테스트
 
+### 1️⃣8️⃣ k8s
+
+- [x]  NCloud module 세분화 - `network` 모듈을 `vpc` 와 `subnet` 으로 분리
+- [x]  `network` 모듈 분리에 따른 `loadBalancer` 모듈, `server` 모듈 수정
+- [x]  `cluster` 모듈 작성
+- [x]  `node_pool` 모듈 작성
+- [x]  기존 `staging` stage,  `prod` stage 수정
+- [x]  `k8s` stage 작성
+- [x]  `Terraform Backend` 를 NCloud S3 Object Storage로 설정
+- [x]  정상 동작 테스트
+- [x]  로컬 환경에서의 사용 설정
+
 
 <br>
 
@@ -530,6 +545,8 @@
 - [22. (👑 FEATURE) Like](https://notion.so/c20221b942ba4f3f9ed152598cedc846)
 - [23. (👑 FEATURE) OpenAPI (2)](https://notion.so/f8c2e921a4ab43be8160655b42ea184d)
 - [24. (👑 FEATURE) Dummy Data](https://notion.so/a17ba1431a884e69949086d51cc3fdf2)
+- [25. (👑 FEATURE) k8s](https://notion.so/bc750741aeb34a298f8e2bd1efd9f80e)
+- [26. (📮 ETC) repository mirror](https://notion.so/605df01a70144df3afa7a6c49c6bfdb6)
 
 <br>
 

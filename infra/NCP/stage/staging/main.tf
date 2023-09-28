@@ -9,6 +9,16 @@ terraform {
     }
   }
   required_version = ">= 0.13"
+
+  backend "s3" {
+    shared_credentials_file     = "~/.ncloud/credentials"
+    bucket                      = "tf-backend"
+    key                         = "swns/ncloud/staging/terraform.tfstate"
+    region                      = "kr-standard"
+    endpoint                    = "https://kr.object.ncloudstorage.com"
+    skip_region_validation      = true
+    skip_credentials_validation = true
+  }
 }
 
 provider "ncloud" {
@@ -21,12 +31,22 @@ provider "ncloud" {
 
 locals {
   env                       = "staging"
-  subnet_netnum             = 1
-  subnet_type               = "PUBLIC"
+  vpc_name                  = "swns"
+  vpc_ipv4_cidr_block       = "10.0.0.0/16"
+  db_subnet_netnum          = 1
+  db_subnet_type            = "PUBLIC" # PRIVATE 설정 시, PUBLIC_IP 사용 및 SSH 자동 설치 불가
+  be_subnet_netnum          = 2
+  be_subnet_type            = "PUBLIC"
+  usage_type                = "GEN"
+  lb_name                   = "lb"
+  lb_subnet_netnum          = 3
+  lb_subnet_type            = "PRIVATE"
+  lb_usage_type             = "LOADB"
   db_name                   = "db"
   db_port_range             = "5432"
   db_init_script_path       = "db_init_script.tftpl"
   be_name                   = "be"
+  be_inbound_ip_block       = "0.0.0.0/0"
   be_port_range             = "8000"
   be_init_script_path       = "be_init_script.tftpl"
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
@@ -66,14 +86,53 @@ data "ncloud_server_product" "product" {
 }
 
 
-module "network" {
-  source = "../../modules/network"
+module "vpc" {
+  source = "../../modules/vpc"
+
+  ncp_access_key  = var.ncp_access_key
+  ncp_secret_key  = var.ncp_secret_key
+  name            = local.vpc_name
+  env             = local.env
+  ipv4_cidr_block = local.vpc_ipv4_cidr_block
+}
+
+module "db-subnet" {
+  source = "../../modules/subnet"
 
   ncp_access_key = var.ncp_access_key
   ncp_secret_key = var.ncp_secret_key
+  name           = local.db_name
   env            = local.env
-  subnet_netnum  = local.subnet_netnum
-  subnet_type    = local.subnet_type
+  vpc_id         = module.vpc.vpc_id
+  subnet_netnum  = local.db_subnet_netnum
+  subnet_type    = local.db_subnet_type
+  usage_type     = local.usage_type
+}
+
+module "be-subnet" {
+  source = "../../modules/subnet"
+
+  ncp_access_key = var.ncp_access_key
+  ncp_secret_key = var.ncp_secret_key
+  name           = local.be_name
+  env            = local.env
+  vpc_id         = module.vpc.vpc_id
+  subnet_netnum  = local.be_subnet_netnum
+  subnet_type    = local.be_subnet_type
+  usage_type     = local.usage_type
+}
+
+module "lb-subnet" {
+  source = "../../modules/subnet"
+
+  ncp_access_key = var.ncp_access_key
+  ncp_secret_key = var.ncp_secret_key
+  name           = local.lb_name
+  env            = local.env
+  vpc_id         = module.vpc.vpc_id
+  subnet_netnum  = local.lb_subnet_netnum
+  subnet_type    = local.lb_subnet_type
+  usage_type     = local.lb_usage_type
 }
 
 module "db" {
@@ -82,8 +141,9 @@ module "db" {
   ncp_secret_key   = var.ncp_secret_key
   name             = local.db_name
   env              = local.env
-  vpc_id           = module.network.vpc_id
-  subnet_id        = module.network.subnet_id
+  vpc_id           = module.vpc.vpc_id
+  subnet_id        = module.db-subnet.subnet_id
+  inbound_ip_block = "${ncloud_public_ip.be_public_ip.public_ip}/32"
   port_range       = local.db_port_range
   init_script_path = local.db_init_script_path
   init_script_envs = {
@@ -106,8 +166,9 @@ module "be" {
   ncp_secret_key   = var.ncp_secret_key
   name             = local.be_name
   env              = local.env
-  vpc_id           = module.network.vpc_id
-  subnet_id        = module.network.subnet_id
+  vpc_id           = module.vpc.vpc_id
+  subnet_id        = module.be-subnet.subnet_id
+  inbound_ip_block = local.be_inbound_ip_block
   port_range       = local.be_port_range
   init_script_path = local.be_init_script_path
   init_script_envs = {
@@ -142,8 +203,8 @@ module "loadBalancer" {
   source             = "../../modules/loadBalancer"
   ncp_access_key     = var.ncp_access_key
   ncp_secret_key     = var.ncp_secret_key
-  vpc_id             = module.network.vpc_id
-  subnet_id          = module.network.subnet_id
+  vpc_id             = module.vpc.vpc_id
+  subnet_id          = module.lb-subnet.subnet_id
   name               = local.be_name
   env                = local.env
   server_instance_no = module.be.server_instance_no
