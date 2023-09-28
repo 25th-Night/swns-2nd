@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.constraints import UniqueConstraint
 
 from taggit.managers import TaggableManager
 
@@ -155,7 +156,12 @@ class Like(models.Model):
             models.Index(fields=["content_type", "object_id"]),
             models.Index(fields=["created_at"]),
         ]
-        unique_together = [["content_type", "object_id", "user"]]
+        constraints = [
+            UniqueConstraint(
+                fields=["content_type", "object_id", "user"],
+                name="unique_like",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.user} like {self.content_type.model}//-{self.object_id}"
