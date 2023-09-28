@@ -21,7 +21,7 @@
 ## 📚 Issue
 <!-- Feature Request 목적으로 사전에 작성된 Github Issue를 추가해주세요.-->
 
-- 
+- close 
 
 
 <br>
