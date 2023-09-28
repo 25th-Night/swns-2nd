@@ -1,18 +1,19 @@
 name: CD to staging server using Docker Image
 
 on:
-    pull_request:
-        types:
-            - closed
-        branches:
-            - develop
-        paths-ignore:
-            - 'README.md'
-            - 'docker/**'
-            - 'infra/**'
-            - 'script/**'
-            - '.github/workflows/01_CI.yaml'
-            - '.github/workflows/03_CICD_to_prod.yaml'
+    workflow_dispatch:
+    # pull_request:
+    #     types:
+    #         - closed
+    #     branches:
+    #         - develop
+    #     paths-ignore:
+    #         - 'README.md'
+    #         - 'docker/**'
+    #         - 'infra/**'
+    #         - 'script/**'
+    #         - '.github/workflows/01_CI.yaml'
+    #         - '.github/workflows/03_CICD_to_prod.yaml'
 
 
 env:
