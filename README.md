@@ -545,6 +545,11 @@
 - [x]  docker-compose 파일에 prometheus 추가
 - [x]  정상 동작 확인
 
+### 2️⃣3️⃣ Monitoring - Grafana
+
+- [x]  docker-compose에 grafana 앱 추가 코드 작성
+- [x]  grafana 실행 및 prometheus 설정, 정상 동작 확인
+
 
 <br>
 
@@ -584,6 +589,7 @@
 - [28. (🏰 INFRA) Helm](https://notion.so/550a72f1cff64215b11ac03c3801a1e3)
 - [29. (🏰 INFRA) ArgoCD를 통한 배포](https://notion.so/5b59fa957f1b4ead9ac7215f2aa1e6c3)
 - [30. (🏰 INFRA) Prometheus](https://notion.so/7e0fc316cd2c409e83da6c35b1470142)
+- [31. (🏰 INFRA) Grafana](https://notion.so/1d78ca43b3ec4f63b0c061595f3100ff)
 
 <br>
 
