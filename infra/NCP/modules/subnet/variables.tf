@@ -18,10 +18,14 @@ variable "vpc_id" {
   type = string
 }
 
-variable "subnet_id" {
+variable "subnet_netnum" {
   type = string
 }
 
-variable "server_instance_no" {
+variable "subnet_type" {
+  type = string
+}
+
+variable "usage_type" {
   type = string
 }

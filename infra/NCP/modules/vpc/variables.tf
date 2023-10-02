@@ -14,14 +14,6 @@ variable "env" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "subnet_id" {
-  type = string
-}
-
-variable "server_instance_no" {
+variable "ipv4_cidr_block" {
   type = string
 }
