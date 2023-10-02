@@ -64,6 +64,19 @@ services:
       - --storage.tsdb.retention.size=1GB
       - --web.enable-admin-api
 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss
+    ports:
+      - 3000:3000
+    volumes:
+      - swns-grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=1234
+      - GF_USERS_ALLOW_SIGN_UP=false
+
 volumes:
   swns-static:
   postgres_swns:
+  swns-grafana:
