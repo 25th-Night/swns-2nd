@@ -1,0 +1,30 @@
+name: CD using ArgoCD
+
+on:
+    release:
+        types:
+            - published
+
+jobs:
+    deploy:
+        name: deploy new version
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+              with:
+                repository: 25th-Night/swns-2nd
+                ref: main
+                token: ${{ secrets.PAT }}
+
+            - name: Update appVersion
+              run: |
+                sed -i "s/appVersion.*/appVersion: ${{ github.event.release.tag_name }}/g" helm/swns/Chart.yaml
+                cat helm/swns/Chart.yaml
+              shell: bash
+
+            - name: Commit and Push to Repository
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                commit_message: Update Version to ${{ github.event.release.tag_name }}
+                branch : main
