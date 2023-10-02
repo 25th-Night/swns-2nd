@@ -550,6 +550,12 @@
 - [x]  docker-compose에 grafana 앱 추가 코드 작성
 - [x]  grafana 실행 및 prometheus 설정, 정상 동작 확인
 
+### 2️⃣4️⃣ Monitoring - k8s로 배포
+
+- [x]  Helm Chart를 이용한 prometheus를 k8s로 배포
+- [x]  Helm Chart를 이용한 grafana를 k8s로 배포
+- [x]  정상 동작 확인
+
 
 <br>
 
@@ -588,8 +594,9 @@
 - [27. (🏰 INFRA) ArgoCD](https://notion.so/5578b6558a90455f8614a782ebbeace9)
 - [28. (🏰 INFRA) Helm](https://notion.so/550a72f1cff64215b11ac03c3801a1e3)
 - [29. (🏰 INFRA) ArgoCD를 통한 배포](https://notion.so/5b59fa957f1b4ead9ac7215f2aa1e6c3)
-- [30. (🏰 INFRA) Prometheus](https://notion.so/7e0fc316cd2c409e83da6c35b1470142)
-- [31. (🏰 INFRA) Grafana](https://notion.so/1d78ca43b3ec4f63b0c061595f3100ff)
+- [30. (🏰 INFRA) Monitoring - Prometheus](https://notion.so/7e0fc316cd2c409e83da6c35b1470142)
+- [31. (🏰 INFRA) Monitoring - Grafana](https://notion.so/1d78ca43b3ec4f63b0c061595f3100ff)
+- [32. (🏰 INFRA) Monitoring - k8s로 배포](https://notion.so/7f57e6d36273485da47ddc85807273af)
 
 <br>
 
