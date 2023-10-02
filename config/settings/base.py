@@ -14,6 +14,9 @@ from datetime import timedelta
 import os
 from pathlib import Path
 
+VERSION = "0.1.0"
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -59,6 +62,7 @@ INSTALLED_APPS += [
 
 
 MIDDLEWARE = [
+    "common.middleware.HealthCheckMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
