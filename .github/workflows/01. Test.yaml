@@ -10,6 +10,7 @@ on:
             - 'infra/**'
             - 'script/**'
             - 'helm/**'
+            - 'monitoring/**'
 
 jobs:
     lint:

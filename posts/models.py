@@ -7,6 +7,8 @@ from django.db.models.constraints import UniqueConstraint
 
 from taggit.managers import TaggableManager
 
+from django_prometheus.models import ExportModelOperationsMixin
+
 from common.models import CommonModel
 
 
@@ -19,7 +21,7 @@ class PublishedManager(models.Manager):
         )
 
 
-class Post(CommonModel):
+class Post(ExportModelOperationsMixin("post"), CommonModel):
     class StatusChoices(models.IntegerChoices):
         DRAFT = 0
         PUBLISHED = 1
@@ -77,7 +79,7 @@ class Post(CommonModel):
         super().save(*args, **kwargs)
 
 
-class Comment(CommonModel):
+class Comment(ExportModelOperationsMixin("comment"), CommonModel):
     post = models.ForeignKey(
         Post, verbose_name="게시글", on_delete=models.CASCADE, related_name="comments"
     )
@@ -104,7 +106,7 @@ class Comment(CommonModel):
         return f"{self.body[:10]}.." if len(self.body) > 10 else self.body
 
 
-class Image(models.Model):
+class Image(ExportModelOperationsMixin("image"), models.Model):
     name = models.TextField(verbose_name="제목", max_length=50)
     post = models.ForeignKey(
         Post, verbose_name="게시글", on_delete=models.CASCADE, related_name="images"
@@ -131,7 +133,7 @@ class Image(models.Model):
         return f"{self.post} - {self.name}"
 
 
-class Like(models.Model):
+class Like(ExportModelOperationsMixin("like"), models.Model):
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,

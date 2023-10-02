@@ -512,6 +512,39 @@
 - [x]  정상 동작 테스트
 - [x]  로컬 환경에서의 사용 설정
 
+### 1️⃣9️⃣ ArgoCD
+
+- [x]  ArgoCD 설치
+- [x]  `argocd-server` svc의 유형 변경
+- [x]  비밀번호 확인 및 서버 접속
+
+### 2️⃣0️⃣ Helm
+
+- [x]  health check, version check API 작성
+- [x]  Helm 설치
+- [x]  Helm Chart 생성
+- [x]  기타 파일 작성
+- [x]  `values.yaml` 작성
+- [x]  `Chart.yaml` 작성
+- [x]  PostgreSQL 서버 생성을 위한 매니페스트 yaml 작성
+- [x]  Django 서버 생성을 위한 매니페스트 yaml 작성
+
+### 2️⃣1️⃣ ArgoCD를 통한 배포
+
+- [x]  Github token 발급 및 secret 설정
+- [x]  실시간 동기화를 위한 github webhook 설정
+- [x]  환경별 환경변수 설정
+- [x]  CI/CD workflow 수정
+- [x]  ArgoCD에 repository 등록
+- [x]  ArgoCD를 통한 환경별 배포
+
+### 2️⃣2️⃣ Monitoring - Prometheus
+
+- [x]  django-prometheus 설치 및 설정
+- [x]  prometheus 설정
+- [x]  docker-compose 파일에 prometheus 추가
+- [x]  정상 동작 확인
+
 
 <br>
 
@@ -545,10 +578,12 @@
 - [22. (👑 FEATURE) Like](https://notion.so/c20221b942ba4f3f9ed152598cedc846)
 - [23. (👑 FEATURE) OpenAPI (2)](https://notion.so/f8c2e921a4ab43be8160655b42ea184d)
 - [24. (👑 FEATURE) Dummy Data](https://notion.so/a17ba1431a884e69949086d51cc3fdf2)
-- [25. (👑 FEATURE) k8s](https://notion.so/bc750741aeb34a298f8e2bd1efd9f80e)
+- [25. (🏰 INFRA) k8s](https://notion.so/bc750741aeb34a298f8e2bd1efd9f80e)
 - [26. (📮 ETC) repository mirror](https://notion.so/605df01a70144df3afa7a6c49c6bfdb6)
-- [27. (👑 FEATURE) ArgoCD](https://notion.so/5578b6558a90455f8614a782ebbeace9)
-- [27. (👑 FEATURE) Helm](https://notion.so/550a72f1cff64215b11ac03c3801a1e3)
+- [27. (🏰 INFRA) ArgoCD](https://notion.so/5578b6558a90455f8614a782ebbeace9)
+- [28. (🏰 INFRA) Helm](https://notion.so/550a72f1cff64215b11ac03c3801a1e3)
+- [29. (🏰 INFRA) ArgoCD를 통한 배포](https://notion.so/5b59fa957f1b4ead9ac7215f2aa1e6c3)
+- [30. (🏰 INFRA) Prometheus](https://notion.so/7e0fc316cd2c409e83da6c35b1470142)
 
 <br>
 
