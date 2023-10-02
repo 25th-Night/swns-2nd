@@ -1,6 +1,6 @@
 # 📢 소셜 네트워크 서비스 개발 프로젝트 2차
 
-### 🔔 참고 <br>
+### 🔔 참고
 > 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u> repository** <br>
 > 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 2차](https://github.com/likelion-backend-6th/TrackProject_2_ChoiSeonWoo)</u> repository** <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → `k8s` 작업부터 이어서 진행하기 위해 `미러링` 를 통해 기존 작업 코드 및 커밋 내역을 복제후 진행하였음을 참고해주세요.
@@ -547,6 +547,8 @@
 - [24. (👑 FEATURE) Dummy Data](https://notion.so/a17ba1431a884e69949086d51cc3fdf2)
 - [25. (👑 FEATURE) k8s](https://notion.so/bc750741aeb34a298f8e2bd1efd9f80e)
 - [26. (📮 ETC) repository mirror](https://notion.so/605df01a70144df3afa7a6c49c6bfdb6)
+- [27. (👑 FEATURE) ArgoCD](https://notion.so/5578b6558a90455f8614a782ebbeace9)
+- [27. (👑 FEATURE) Helm](https://notion.so/550a72f1cff64215b11ac03c3801a1e3)
 
 <br>
 
