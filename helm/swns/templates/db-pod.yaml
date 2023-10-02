@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "swns.db.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "swns.db.selectorLabels" . | nindent 4 }}
+spec:
+  containers:
+    - name: {{ include "swns.db.fullname" . }}
+      image: postgres:13
+      env:
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/k8s"
+      envFrom:
+        - secretRef:
+            name: {{ include "swns.db.fullname" . }}
+      ports:
+        - containerPort: {{ .Values.dbService.port }}
+      volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: postgres-data
+  volumes:
+    - name: postgres-data
+      persistentVolumeClaim:
+        claimName: {{ include "swns.db.fullname" . }}
