@@ -48,6 +48,22 @@ services:
     env_file:
       - ../.envs/local/server
 
+  prometheus:
+    container_name: prometheus
+    depends_on:
+      - swns
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ../monitoring:/etc/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.console.templates=/etc/proemtheus/consoles
+      - --storage.tsdb.retention.time=10d
+      - --storage.tsdb.retention.size=1GB
+      - --web.enable-admin-api
+
 volumes:
   swns-static:
   postgres_swns:

@@ -93,5 +93,9 @@ drf_spectacular_urlpatterns = [
     ),
 ]
 
-urlpatterns += drf_spectacular_urlpatterns
+prometheus_urlpatterns = [
+    path("", include("django_prometheus.urls")),
+]
+
+urlpatterns += drf_spectacular_urlpatterns + prometheus_urlpatterns
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

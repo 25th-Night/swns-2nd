@@ -5,6 +5,8 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+from django_prometheus.models import ExportModelOperationsMixin
+
 from common.models import CommonModel
 
 
@@ -35,7 +37,9 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(CommonModel, AbstractBaseUser, PermissionsMixin):
+class User(
+    ExportModelOperationsMixin("user"), CommonModel, AbstractBaseUser, PermissionsMixin
+):
     email = models.EmailField(verbose_name="이메일", max_length=100, unique=True)
     fullname = models.TextField(verbose_name="이름", max_length=30)
     phone = models.TextField(verbose_name="휴대폰번호", max_length=30, unique=True)
@@ -70,7 +74,7 @@ class User(CommonModel, AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
-class Profile(CommonModel):
+class Profile(ExportModelOperationsMixin("profile"), CommonModel):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="유저", related_name="profile"
     )
@@ -91,7 +95,7 @@ class Profile(CommonModel):
         return f"{self.user}의 프로필"
 
 
-class Follow(models.Model):
+class Follow(ExportModelOperationsMixin("follow"), models.Model):
     user_from = models.ForeignKey(
         "users.User",
         verbose_name="팔로우 한 유저",
