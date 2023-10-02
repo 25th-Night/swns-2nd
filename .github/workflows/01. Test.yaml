@@ -1,0 +1,56 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - 'feat/**'
+            - 'fix/**'
+        paths-ignore:
+            - 'README.md'
+            - 'infra/**'
+            - 'script/**'
+            - 'helm/**'
+
+jobs:
+    lint:
+        name: Check lint (black)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+            
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.11'
+
+            - name: Install black
+              run: pip install black
+            
+            - name: check black
+              run: black --check .
+    
+    test:
+        needs: lint
+        name: test with docker
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: test
+              run: |
+                docker compose -f docker/docker-compose_test.yml up -d --build
+                docker compose -f docker/docker-compose_test.yml exec swns python manage.py test
+              env:
+                NCP_ACCESS_KEY: ${{ secrets.NCP_ACCESS_KEY }}
+                NCP_SECRET_KEY: ${{ secrets.NCP_SECRET_KEY }}
+                NCP_S3_ENDPOINT_URL: ${{ vars.NCP_S3_ENDPOINT_URL }}
+                NCP_S3_REGION_NAME: ${{ vars.NCP_S3_REGION_NAME }}
+                NCP_S3_BUCKET_NAME: ${{ vars.NCP_S3_BUCKET_NAME }}
+                push: true
+
+            - name: post test
+              if: ${{ always() }}
+              run: |
+                docker compose -f docker/docker-compose_test.yml down
