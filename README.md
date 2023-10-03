@@ -3,17 +3,158 @@
 ### 🔔 참고
 > 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u> repository** <br>
 > 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 2차](https://github.com/likelion-backend-6th/TrackProject_2_ChoiSeonWoo)</u> repository** <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → `k8s` 작업부터 이어서 진행하기 위해 `미러링` 를 통해 기존 작업 코드 및 커밋 내역을 복제후 진행하였음을 참고해주세요.
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → 참고: **`k8s` 작업부터 이어서 진행하기 위해 `미러링` 를 통해 기존 작업 코드 및 커밋 내역을 복제후 진행**
+
+<br>
+
+## 📆 프로젝트 기간
+
+| 차수     | 기간                      |
+|--------|-------------------------|
+| **1차** | `23.09.04` ~ `23.09.08` |
+| **2차** | `23.09.12` ~ `23.09.19` |
+| **추가** | `23.09.21` ~ `23.10.03` |
 
 <br>
 
 ## 🗒️ 프로젝트 개요
+
 - Python, Django를 이용한 소셜 네트워크 서비스 애플리케이션 개발
-- Django REST Framework, drf-spectacular를 이용한 백엔드 API 개발
+- Django REST Framework, drf-spectacular를 이용한 백엔드 API 개발, API Docs 제공
 - Docker를 이용한 컨테이너 형태로의 배포
-- GitHub Actions를 이용한 CICD pipeline 구축
-- Terraform을 이용한 IaC 구현
-- NCloud에서 로드밸런서를 활용한 클라우드 방식의 배포
+- GitHub Actions를 이용한 CI/CD pipeline 구축
+- Terraform을 이용한 IaC 구현 및 관리
+- NCloud, AWS를 이용한 클라우드 서버 환경 구성
+- Helm Chart, ArgoCD를 이용하여 Kubernetes에 배포
+- Prometheus, Grafana를 통한 모니터링
+
+<br>
+
+## 🗼 Architecture
+
+![Project Architecture](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/Architecture.png)
+
+<br>
+
+## 🏤 Infra
+
+### 🖥 GitHub Repository
+
+**코드 및 버전 관리**
+
+- 작업 환경 별 Branch 분리
+
+| Branch    | 용도               | Merge to         |
+|-----------|------------------|------------------|
+| `feat`    | 기능 개발 및 테스트      | `develop` branch |
+| `develop` | 정상 동작 확인 및 버그 수정 | `main` branch    |
+| `main`    | 서비스 배포           | -                |
+
+<br>
+
+### 🚥 GitHub Actions
+
+**지속적 통합 (CI) 및 지속적 배포 (CD)를 구축**
+
+**1️⃣ Test**
+
+| 분류    | 설명                                                                                        |
+|-------|:------------------------------------------------------------------------------------------|
+| 조건    | `feature` 혹은 `fix` 브랜치로 push되었을 때                                                         |
+| 진행    | - black 라이브러리로 Lint 체크 <br> - `docker-compose`를 이용한 테스트 코드 실행                             |
+| 확인 대상 | - 모든 파일과 디렉토리 <br> - 단, `infra` 및 `script`, `helm`, `monitoring` 디렉토리 및 그 하위 파일과 디렉토리은 제외 |
+
+**2️⃣ CI**
+
+| 분류 | 설명                                                                          |
+|----|:-------------------------------------------------------------------------------|
+| 조건 | - `Pull Request`가 `closed`되었을 때 <br> - 새로운 버전이 `Release`되었을 때    |
+| 진행 | - `Pull Request`가 `closed`된 경우 : `Latest` 버전과 `TimeStamp` 버전 docker image를 build 후 push <br> - 새로운 버전이 `Release`된 경우 : `Release Tag Name` 버전 docker image를 build 후 push <br> - 이미지 push는 `Ncloud Container Registry` 로 진행 |
+
+**3️⃣ CD**
+
+| 분류 | 설명                                                                                                                                            |
+|----|:----------------------------------------------------------------------------------------------------------------------------------------------|
+| 조건 | - 새로운 버전이 `Release`되었을 때                                                                                                                      |
+| 진행 | - Helm Chart의 `Chart.yaml` 파일 내 `appVersion`을 `Release Tag Name`으로 변경  <br> - ArgoCD에서 해당 변화를 감지하여 `Release Tag Name` 버전의 이미지를 각 stage 서버에 배포 |
+
+
+<br>
+
+### ⛵ Docker
+**컨테이너화된 애플리케이션 이미지를 생성 및 관리**
+
+- 이미지 버전 관리를 위하여 조건에 따라 `TIMESTAMP` Ver. 과 `latest` Ver. , `Release` Ver. 으로 docker image를 생성
+- 생성된 이미지는 클라우드 환경(NCloud Container Registry)에 Push
+- 롤백 혹은 백업, 로그 확인 목적으로 `Latest` Ver. 이미지,`Timestamp` Ver. 이미지를 push하여 보관
+- 실제 배포에는 `release` Ver. 이미지를 사용
+
+<br> 
+
+### 💻 Terraform
+
+**클라우드 환경에서 인프라를 코드로 관리 및 프로비저닝**
+- `S3` Backend를 활용한 원격 환경에서의 Terraform 상태 파일 관리
+
+**Shared Module**
+- AWS `S3` : S3 Object Storage 리소스 생성
+- NCP `Vpc` : VPC 리소스 생성
+- NCP `Subnet` : Subnet 리소스 생성
+- NCP `Cluster` : Nks Cluster 리소스 생성
+- NCP `Node_pool` : Nks Node Pool 리소스 생성
+- NCP `Server` : Access Group, Network Interface, Init Script, Server 및 관련 리소스 생성
+- NCP `LoadBalancer` : Target Group, LoadBalancer 및 관련 리소스 생성
+
+**Child Module**
+- `k8s` : `main` 브랜치 에서 관리되는 코드를 사용하여 배포에 사용될 Kubernetes 리소스를 생성
+
+<br>
+
+### ⛅ AWS, NCP
+
+**클라우드 리소스를 활용하여 애플리케이션 서비스를 SaaS 형태로 제공**
+
+- 기본 환경 구축은 NCloud에서 Kubernetes Cluster 내에 진행
+- 기타 특이사항
+  - `AWS` : 정적 파일 서빙을 위하여 s3 사용
+  - `NCloud` : 이미지 업로드 기능을 통한 이미지 저장에 Object Storage 사용
+
+<br>
+
+### 🎇 Helm
+
+**Kubernetes 애플리케이션 관리**
+
+- Helm 차트를 통해 애플리케이션 관련 리소스를 정의하고 배포
+- 1차에서 Terraform으로 생성한 모든 리소스를 Helm 차트를 이용하여 생성하는 방식으로 대체
+
+<br>
+
+### 🐙 ArgoCD
+
+**Kubernetes 애플리케이션 배포 및 관리 자동화**
+
+- Helm 차트를 통해 작성된 Kubernetes Manifest 파일을 GitHub Repository에서 관리
+- 해당 Repository의 변화를 감지하여 자동으로 Kubernetes 환경에 새 버전을 배포
+
+<br>
+
+### 🔥 Prometheus
+
+**애플레케이션 모니터링 도구로 사용**
+
+- `django-prometheus`를 이용하여 보다 쉽게 `Prometheus` 모니터링 환경을 구축
+- 애플리케이션 및 시스템의 성능 및 상태를 실시간으로 관리
+
+<br>
+
+### 🌞 Grafana
+
+**Prometheus로 수집된 데이터 시각화**
+
+- Prometheus 데이터 소스를 정의하고, 해당 데이터 소스에 쿼리를 통해 데이터를 동적으로 조회
+- 조회 결과를 통해 얻어진 metric 데이터를 시각화하여 대시보드를 구성
+
 
 <br>
 
@@ -78,85 +219,6 @@
 
 <br>
 
-## 🏤 Infra
-
-### 🖥 GitHub Repository
-
-**코드 및 버전 관리**
-
-- 작업 환경 별 Branch 분리
-
-| Branch | 용도                       | Merge to         |
-|-------|--------------------------|------------------|
-| `feat`  | 기능 개발 및 테스트              | `develop` branch |
-| `develop` | 정상 동작 확인 및 버그 수정         |  `main` branch   |
-| `main`  | 서비스 배포                   | -                |
-
-<br>
-
-### 🚥 GitHub Actions
-
-**지속적 통합 (CI) 및 지속적 배포 (CD)를 구축**
-
-**1️⃣ CI**
-
-| 분류    | 설명                                                                  |
-|-------|:--------------------------------------------------------------------|
-| 조건    | `feature` 혹은 `fix` 브랜치로 push되었을 때                                   |
-| 진행    | - 테스트 진행 <br> - 테스트 정상 완료 시 NCR로 docker image `build` & `push`      |
-| 확인 대상 | - 모든 파일과 디렉토리 <br> - 단, `infra` 및 `script` 디렉토리 및 그 하위 파일과 디렉토리은 제외 |
-
-**2️⃣ CD to staging**
-
-| 분류    | 설명                                                                                                                                               |
-|-------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
-| 조건    | - `feature` 브랜치에서 `develop` 브랜치로의 `Pull Request`가 완료되어 코드가 `merge` 되었을 때                                                                         |
-| 진행    | - `staging` stage의 `django` 서버로 배포 <br> - 배포는 NCR docker image 를 통한 컨테이너 형태로 진행                                                                  |
-| 확인 대상 | - 모든 파일과 디렉토리 <br> - 단, `docker` , `infra` , `script` 디렉토리 및 그 하위 파일과 디렉토리를 제외 <br> - .github/workflows 내 자기 자신(CD_dev.yaml)을 제외한 다른 워크플로우 파일 제외 |
-
-**3️⃣ CI and CD to production**
-
-| 분류    | 설명                                                                                                         |
-|-------|:-----------------------------------------------------------------------------------------------------------|
-| 조건    | - 새로운 버전이 Release되었을 때                                                                                     |
-| 진행    | - NCR로 release 버전의 docker image `build` & `push` <br> - `prod` stage의 `django` 서버에 해당 버전의 docker image를 배포 |
-
-
-<br>
-
-### ⛵ Docker
-**컨테이너화된 애플리케이션 이미지를 생성 및 관리**
-
-- 이미지 버전 관리를 위하여 조건에 따라 `TIMESTAMP` Ver. 과 `latest` Ver. , `Release` Ver. 으로 docker image를 생성
-- 생성된 이미지는 클라우드 환경(NCloud Container Registry)에 Push
-- `staging` stage로의 배포 시 `Latest` Ver. 이미지를 사용하며, 롤백 혹은 로그 확인 시 `TIMESTAMP` Ver. 이미지를 사용
-- `prod` stage로의 배포 시 `release` Ver. 이미지를 사용하며, 롤백 혹은 로그 확인 시에도 각 `release` Ver. 이미지를 사용
-
-<br> 
-
-### 💻 Terraform
-
-**클라우드 환경에서 인프라를 코드로 관리 및 프로비저닝**
-
-**Shared Module**
-- AWS `S3` : S3 Object Storage 리소스 생성
-- NCP `Network` : VPC, Subnet 리소스 생성
-- NCP `Server` : Access Group, Network Interface, Init Script, Server 및 관련 리소스 생성
-- NCP `LoadBalancer` : Target Group, LoadBalancer 및 관련 리소스 생성
-
-**Child Module**
-- `Staging` : `develop` 브랜치 에서 관리되는 코드를 사용하여 `스테이징` 환경의 클라우드 리소스를 배포
-- `Prod` :  `main` 브랜치 에서 관리되는 코드를 사용하여 `프로덕션` 환경의 클라우드 리소스를 배포
-
-<br>
-
-### ⛅ AWS, NCP
-
-**클라우드 리소스를 활용하여 애플리케이션 서비스를 SaaS 형태로 제공**
-
-
-<br>
-
 ## 🪓 주요 설치 패키지/모듈
 
 |    종류     |                이름                 |    버전    |
@@ -177,6 +239,7 @@
 |  Library  |         **django-taggit**         |  4.0.0   |
 |  Library  |            **Pillow**             |  10.0.0  |
 |  Library  |             **Faker**             |  19.6.1  |
+|  Library  |       **django-prometheus**       |  2.3.1   |
 
 <br> 
 
@@ -304,27 +367,31 @@
 
 <br>
 
-## API 명세서
+## 📃 API 명세서
 > 하단 Notion 링크를 통해 접속하여 확인 가능
 
 ![API_docs](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/API_docs.png)
 
-
-
-
 <br>
 
-## 배포 URL
+## 📸 주요 화면
 
-### [🚧 `staging` Server URL](http://be-lb-staging-19620609-8d2472f463f7.kr.lb.naverncp.com/)
+### 📄 OpenAPI Docs
 
-> [📜 `OpenAPI` URL](http://be-lb-staging-19620609-8d2472f463f7.kr.lb.naverncp.com/api/docs/)
-
-### [🏳‍🌈 `production` Server URL](http://be-lb-prod-19620881-161af97c0c6e.kr.lb.naverncp.com/)
-
-> [📜 `OpenAPI` URL](http://be-lb-prod-19620881-161af97c0c6e.kr.lb.naverncp.com/api/docs/)
+![OpenAPI docs](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/OpenAPI_Docs.gif)
 
 
+### 🐙 ArgoCD
+
+![ArgoCD](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/argocd.png)
+
+### 🔥 Prometheus
+
+![Prometheus](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/prometheus.png)
+
+### 🌞 Grafana
+
+![Grafana](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/grafana.png)
 
 <br>
 
@@ -359,11 +426,11 @@
 ### 0️⃣3️⃣ Terraform 셋팅
 
 - [x]  디렉토리 및 파일 생성
-- [x]  기본 모듈 : `network` 작성
-- [x]  기본 모듈 : `server` 작성
-- [x]  기본 모듈 : `loadBalancer` 작성
-- [x]  서버 모듈 : `staging` 작성
-- [x]  서버 모듈 : `prod` 작성
+- [x]  기본 모듈 : `network` 작성
+- [x]  기본 모듈 : `server` 작성
+- [x]  기본 모듈 : `loadBalancer` 작성
+- [x]  서버 모듈 : `staging` 작성
+- [x]  서버 모듈 : `prod` 작성
 - [x]  배포 스크립트 작성
 - [x]  SSH provider를 이용한 배포
 - [x]  정상 생성 및 배포 확인
@@ -601,239 +668,24 @@
 <br>
 
 
-## 📠 Porting Manual
-
-**아래 내용이 이미 준비된 상황을 가정으로 작성되었습니다.**
-
-> - NCloud 및 AWS에 가입된 계정 존재
-> - NCloud에서 Administrator 권한이 부여된 Sub Account/서비스 계정이 존재
-> - AWS에서 Administrator 권한이 부여된 IAM 서비스 계정이 존재
-> - NCloud Container Registry에 생성한 Registry가 존재 
-
-
-### 1. 아래 문서를 참고하여 `NCLOUD Object Storage` 버킷과  생성
-
-- [NCloud Object Storage 버킷 생성](https://www.notion.so/browneyed/12-Image-2d88d0e5590d46368c817d08c3967b20?pvs=4#618e69a5cf6f4d0db92de94bb8a786a2)
-  - Terraform에서 NCloud Object Storage 리소스 생성을 지원하지 않아 수동으로 생성 (2023.09 기준)
-
-### 2. git clone 후 아래 순서대로 진행
-
-> `staging` 서버 환경 구축만을 기준으로 작성
-
-
-**a.`.envs` 폴더 하위에 `prod` 폴더 생성 후, 해당 폴더 하위에 `prod` 파일 생성**
-
-```bash
-# NCloud -------------------------------
-NCP_ACCESS_KEY=<NCloud Sub Account 계정의 Access Key>
-NCP_SECRET_KEY=<NCloud Sub Account 계정의 Secret Key>
-NCP_S3_ENDPOINT_URL=https://kr.object.ncloudstorage.com
-NCP_S3_REGION_NAME=kr-standard
-NCP_S3_BUCKET_NAME=<NCloud Object Storage에서 생성한 버킷 이름>
-# AWS ----------------------------------
-AWS_ACCESS_KEY_ID=<AWS IAM 계정의 Access Key>
-AWS_SECRET_ACCESS_KEY=<AWS IAM 계정의 Access Key>
-AWS_REGION=ap-northeast-2
-AWS_STORAGE_BUCKET_NAME="<name>-<env>" # infra/AWS/modules/s3/staging/main.tf 참고
-```
-
-**b. docker image 생성 및 NCloud Container Registry 로그인 후 push**
-
-- NCloud Container Registry 로그인
-
-```bash
-docker login <Sub Account Id>.kr.ncr.nturss.com
-```
-- Django 앱 이미지 생성
-
-```bash
-docker build -t <Sub Account Id>.kr.ncr.nturss.com/<이미지태그>:latest -f docker/Dockerfile_dj .
-```
-
-- 생성한 이미지를 NCloud Container Registry 로그인
-
-```bash
-docker push <Sub Account Id>.kr.ncr.nturss.com/<이미지태그>:latest
-```
-
-**c. https://djecrety.ir/ 접속 → `Generate` 클릭 > `Django Secret Key` 가 자동 복사됨**
-
-- 어딘가에 붙여넣기 하여 보관해둘 것
-
-**d. `infra/NCP/stage/staging` 폴더 내에 `terraform.tfvars` 파일 생성 및 작성**
-
-```bash
-# --------------------------------------------
-# Remote Server Account Info
-username="<원격서버 접속시 사용할 계정의 사용자명>"
-password="<원격서버 접속시 사용할 계정의 비밀번호>"
-# --------------------------------------------
-# DB Info
-postgres_db="<PostgreSQL db 서버 이름>"
-postgres_user="<PostgreSQL db 계정 사용자명>"
-postgres_password="<PostgreSQL db 계정 비밀번호>"
-postgres_volume="<PostgreSQL db에 사용할 Volume명>"
-db_container_name="<PostgreSQL db 컨테이너명>"
-# --------------------------------------------
-# Django Info
-django_settings_module="config.settings.staging"
-django_secret_key="'<a에서 생성한 Django Secret Key 삽입>'"
-django_container_name="<Django 앱 컨테이너명>"
-# --------------------------------------------
-# NCP Info
-ncr_host="browneyed.kr.ncr.ntruss.com"
-ncr_image="swns:latest"
-ncp_access_key="<NCloud Sub Account 계정의 Access Key>"
-ncp_secret_key="<NCloud Sub Account 계정의 Secret Key>"
-ncp_lb_domain="lb-init-domain.com"
-ncp_s3_endpoint_url="https://kr.object.ncloudstorage.com"
-ncp_s3_region_name="kr-standard"
-ncp_s3_bucket_name="<NCloud Object Storage에서 생성한 버킷 이름>"
-# --------------------------------------------
-# AWS Info
-aws_access_key_id="<AWS IAM 계정의 Access Key>"
-aws_secret_access_key="<AWS IAM 계정의 Access Key>"
-aws_region="ap-northeast-2"
-aws_storage_bucket_name="<'a'에서 지정한 AWS_STORAGE_BUCKET_NAME>"
-```
-
-**e. Terraform 명령어를 실행하여 인프라 구축**
-
-- AWS 리소스 생성
-
-```bash
-cd infra/NCP/stage/staging
-```
-
-```bash
-terraform init
-```
-
-```bash
-terraform apply
-```
-
-- NCP 리소스 생성
-
-```bash
-cd ../../../..
-cd infra/NCP/stage/staging
-```
-
-```bash
-terraform init
-```
-
-```bash
-terraform apply
-```
-
-- `init script` 관련 에러 발생 시, 터미널에서 아래의 명령어 실행 후 `terraform apply` 재시도
-
-> 줄바꿈 관련 캐리지리턴 제거 명령어
-
-```bash
-sed -i 's/\r//g' ../../script/set_be_server.sh
-sed -i 's/\r//g' ../../script/set_db_server.sh
-```
-
-
-**f. `terraform apply` 의 결과로, 터미널 창에 아래와 같이 출력됨**
-
-- AWS
-
-```bash
-Changes to Outputs:
-  + bucket_bucket_regional_dns = "<버킷명>.s3.ap-northeast-2.amazonaws.com"
-```
-
-- NCP
-
-```bash
-Changes to Outputs:
-  + be_lb_domain = "<Load Balancer 주소>"
-  + be_public_ip = "<Django 서버 Host 주소>"
-  + db_public_ip = "<PostgreSQL DB 서버 Host 주소>"
-```
-
-
-**g. ssh 를 이용하여 Django 서버에 원격 접속**
-
-> `<원격서버 접속시 사용할 계정 정보>` 는 위에서 `d`에서 지정한 데이터들을 사용
-
-```bash
-ssh <원격서버 접속시 사용할 계정의 사용자명>@<Django 서버 Host 주소>
-```
-
-```bash
-<원격서버 접속시 사용할 계정의 비밀번호> 입력 후 Enter
-```
-
-**h. `.env` 파일 내 `NCP_LB_DOMAIN` 내용 수정**
-
-> 실제 서비스에서는 도메인이 이미 지정되어 있으므로 불필요한 과정
-
-- `f` 에서 확인한 `Load Balancer 주소`로 지정
-
-```bash
-vi .env
-```
-
-```bash
-NCP_LB_DOMAIN=<Load Balancer 주소>
-```
-
-**i. 변경된 환경변수 적용**
-
-- `.env` 파일 리로드 및 해당 내용을 `.bash_aliases` 에도 적용하기 위해 아래 명령어 실행
-
-```bash
-source ~/.bash_aliases
-```
-
-**j. 실행 중인 Django 앱 컨테이너 중지 및 삭제 후 재실행**
-
-- 이미 `alias` 가 `.bash_aliases` 파일 내에 지정되어 있어음
-
-```bash
-# django 컨테이너 중지 및 컨테이너 삭제
-dstrm
-```
-
-```bash
-# 환경변수를 반영하여 django 컨테이너 실행
-drerun
-```
-
-**k. `f` 에서 확인한 `Load Balancer 주소`로 접속**
-
-- 정상 접속 됨을 확인 가능
-
-<br>
 
 ## 📚 테스트용 Dummy Data 생성
 
-### 1. ssh를 이용한 `staging` stage의 Django 서버 접속
+### 1. kubectl 명령어를 통한 `staging` stage의 Django 서버 접속
 
 ```bash
-ssh <원격서버 접속용으로 설정한 계정의 사용자명>@<Django 서버 Host 주소>
+# 아래 명령어를 통해 `staging` stage의 Django 서버 `pod` 명을 확인
+kubectl get po -n staging
 ```
 
 ```bash
-<원격서버 접속용으로 설정한 계정의 비밀번호> 입력 후 Enter
+# 아래 명령어로 해당 `pod` 에 접속
+k exec -it <컨테이너명> -n staging -- sh
 ```
 
-```bash
-# 아래 명령어를 통해 컨테이너명 확인
-docker ps
-```
-
-```bash
-docker exec -it <컨테이너명> bash
-```
 ### 2. 아래 명령어를 순서대로 실행하여 데이터 생성
 
-> 데이터 수를 입력하라는 메시지가 뜨면 본인이 직접 입력
+> 생성할 데이터 수를 입력하라는 메시지가 뜨면 본인이 직접 입력
 
 ```bash
 python manage.py 01_user
@@ -863,7 +715,20 @@ python manage.py 06_image
 python manage.py 07_like
 ```
 
-### 3. 서버에 접속하여 데이터 조회 및 확인
+<br>
+
+## 📼 프로젝트 리뷰
+
+1. 관리자, 일반 사용자 모두 사용 가능한 API를 개발하려고 하다 보니, Endpoint가 말끔하게 정리되지 않은 부분
+    - 요구사항에 드러나있지 않은 부분이었다보니 내 생각대로 진행했고, 중반이 지난 시점에 일반 사용자용 API 개발임을 전달받음
+    - 해당 API를 사용할 대상이 누구인지를 먼저 명확히 한 후 개발 진행에 착수해야 할 것으로 생각됨
+2. 필요한 기능 개발 구현을 위해 공식 문서를 더 많이 들여다 보는 연습이 필요
+    - 수업에서 학습한 내용을 바탕으로 기본적인 구현에 대해서는 전체적으로 이해하였으나, 실제 프로젝트에 맞춰 변형되는 부분에 대한 응용이 부족하다 판단됨
+3. 클린코드를 바탕으로 한 코드 작성의 필요성
+    - 동일한 기능을 구현함에 있어 여러가지 방법이 있을텐데, 추가적인 기능개발 및 유지보수를 위해 다시 보더라도 혹은 다른 누군가가 보더라도 이해하기 쉽고 잘 정리된 로직으로 코드를 작성해야 할 필요가 있음
+4. CS, 알고리즘 공부에 더 많은 시간을 투자해야 한다는 생각이 들었음
+    - 기초적이고 기본적인 CS 지식도 아직 헷갈리고 익숙하지 않은 부분이 있고 이로 인해 공식 문서를 읽거나 다른 사람과 개발 관련 대화 시에도 추가적인 시간 소모가 많아지는 경향이 있음
+    - 이러한 부분에서 시간을 절약하고 더 나은 코드 작성을 위해 꾸준한 투자가 필요함
 
 
 <br>
@@ -874,7 +739,6 @@ python manage.py 07_like
 - [ ] 쿼리 속도 개선
 - [ ] API Endpoint 개선
 - [ ] 코드 리팩토링
-- [ ] Infra Architecture Diagram 작성
 
 
 
