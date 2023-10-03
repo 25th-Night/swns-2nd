@@ -32,7 +32,7 @@
 
 ## 🗼 Architecture
 
-![Project Architecture](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/Architecture.png)
+![Project Architecture](./static/img/Architecture.png)
 
 <br>
 
@@ -363,14 +363,14 @@
 
 ## 📅 ERD
 
-![image](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/ERD.png)
+![image](./static/img/ERD.png)
 
 <br>
 
 ## 📃 API 명세서
 > 하단 Notion 링크를 통해 접속하여 확인 가능
 
-![API_docs](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/API_docs.png)
+![API_docs](./static/img/API_docs.png)
 
 <br>
 
@@ -378,20 +378,20 @@
 
 ### 📄 OpenAPI Docs
 
-![OpenAPI docs](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/OpenAPI_Docs.gif)
+![OpenAPI docs](./static/img/OpenAPI_Docs1.gif)
 
 
 ### 🐙 ArgoCD
 
-![ArgoCD](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/argocd.png)
+![ArgoCD](./static/img/argocd.png)
 
 ### 🔥 Prometheus
 
-![Prometheus](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/prometheus.png)
+![Prometheus](./static/img/prometheus.png)
 
 ### 🌞 Grafana
 
-![Grafana](https://s3.ap-northeast-2.amazonaws.com/25th.night-project/TI/TrackProject_2_ChoiSeonWoo/grafana.png)
+![Grafana](./static/img/grafana.png)
 
 <br>
 
