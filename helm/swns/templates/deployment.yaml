@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "swns.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+#   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "swns.selectorLabels" . | nindent 6 }}
