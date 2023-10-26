@@ -1,9 +1,9 @@
 # 📢 소셜 네트워크 서비스 개발 프로젝트 2차
 
 ### 🔔 참고
-> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차 - `Original` Repository](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u>** <br>
-> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차 - `Mirror` Repository](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u>** <br>
-> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 2차 - `Original` Repository](https://github.com/likelion-backend-6th/TrackProject_2_ChoiSeonWoo)</u>** <br>
+> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차 - `Original` Repository](https://github.com/likelion-backend-6th/TrackProject_1_ChoiSeonWoo)</u>** - 231031 이후 접속 불가 <br>
+> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 1차 - `Mirror` Repository](https://github.com/25th-Night/swns-1st)</u>** <br>
+> 📌 <u>**[소셜 네트워크 서비스 개발 프로젝트 2차 - `Original` Repository](https://github.com/likelion-backend-6th/TrackProject_2_ChoiSeonWoo)</u>** - 231031 이후 접속 불가 <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → 참고: **`k8s` 작업부터 이어서 진행하기 위해 `미러링` 를 통해 기존 작업 코드 및 커밋 내역을 복제후 진행**
 
 <br>
